@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SubShare — Smarter Access to Digital Services</title>
+<!-- Tailwind CSS v3 with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              navy: '#063F8F',
+              blue: '#0B66D4',
+              sky: '#168BFF',
+              light: '#EBF3FE',
+              darkbg: '#0B111E',
+              darkcard: '#131B2E',
+              darkborder: '#1F2C47'
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'phone': '0 25px 60px -15px rgba(6, 63, 143, 0.25)',
+            'phone-dark': '0 25px 60px -15px rgba(0, 0, 0, 0.7)',
+            'card-lift': '0 12px 30px -5px rgba(11, 102, 212, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<style data-purpose="custom-animations">
+    @keyframes floatSlow {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-8px) rotate(1deg); }
+    }
+    @keyframes floatReverse {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(8px) rotate(-1.5deg); }
+    }
+    .animate-float-slow {
+      animation: floatSlow 5s ease-in-out infinite;
+    }
+    .animate-float-reverse {
+      animation: floatReverse 6s ease-in-out infinite;
+    }
+    .perspective-mockup {
+      perspective: 1200px;
+    }
+    .phone-tilt {
+      transform: rotateY(-10deg) rotateX(12deg) rotateZ(3deg);
+      transition: transform 0.4s ease;
+    }
+    .phone-tilt:hover {
+      transform: rotateY(-4deg) rotateX(6deg) rotateZ(1deg);
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] dark:bg-brand-darkbg text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
+<!-- BEGIN: TopThemeBar -->
+<aside class="w-full bg-slate-100 dark:bg-[#070B14] py-1.5 border-b border-slate-200 dark:border-brand-darkborder text-xs flex justify-center items-center" data-purpose="theme-switcher-bar">
+<div class="inline-flex p-0.5 rounded-full bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700">
+<button class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold transition-all bg-white text-slate-800 shadow-sm" id="lightToggle" onclick="setTheme('light')">
+<span>☀️</span> Light Mode
+      </button>
+<button class="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all" id="darkToggle" onclick="setTheme('dark')">
+<span>🌙</span> Dark Mode
+      </button>
+</div>
+</aside>
+<!-- END: TopThemeBar -->
+<!-- BEGIN: Navigation -->
+<header class="sticky top-0 z-50 bg-white/90 dark:bg-brand-darkbg/90 backdrop-blur-md border-b border-slate-200/80 dark:border-brand-darkborder">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+<!-- SubShare Logo -->
+<a class="flex items-center gap-3 shrink-0" href="#">
+<div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-navy via-brand-blue to-brand-sky flex items-center justify-center shadow-md shadow-brand-blue/30 text-white font-extrabold text-2xl tracking-tighter">
+<svg class="w-6 h-6 text-white fill-current" viewbox="0 0 24 24">
+<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14.5c0 .83-.67 1.5-1.5 1.5S10 17.33 10 16.5V14H8c-.83 0-1.5-.67-1.5-1.5S7.17 11 8 11h2V9.5C10 7.57 11.57 6 13.5 6H15c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-1.5C12.67 9 12 9.67 12 10.5V11h3c.83 0 1.5.67 1.5 1.5S15.83 14 15 14h-3v2.5z"></path>
+</svg>
+</div>
+<div>
+<span class="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white block leading-none">SubShare</span>
+<span class="text-[10px] font-semibold text-slate-400 tracking-wider block mt-0.5">Find. Pay. Use.</span>
+</div>
+</a>
+<!-- Nav Links -->
+<nav class="hidden lg:flex items-center space-x-7 text-[15px] font-medium text-slate-600 dark:text-slate-300">
+<a class="text-brand-blue dark:text-brand-sky font-semibold relative after:content-[''] after:absolute after:-bottom-1 after:left-0 after:w-full after:h-0.5 after:bg-brand-blue" href="#">Home</a>
+<a class="hover:text-brand-blue dark:hover:text-brand-sky transition-colors" href="#services">Services</a>
+<a class="hover:text-brand-blue dark:hover:text-brand-sky transition-colors" href="#how-it-works">How It Works</a>
+<a class="hover:text-brand-blue dark:hover:text-brand-sky transition-colors" href="#pricing">Pricing</a>
+<a class="hover:text-brand-blue dark:hover:text-brand-sky transition-colors" href="#support">Support</a>
+</nav>
+<!-- Nav Search & Auth CTAs -->
+<div class="flex items-center gap-3">
+<!-- Live Quick Search Pill -->
+<div class="relative hidden sm:block w-52 md:w-60">
+<input class="w-full pl-9 pr-4 py-2 bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs rounded-full text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-blue focus:bg-white dark:focus:bg-slate-800 transition" placeholder="Search services..." type="text"/>
+<svg class="w-4 h-4 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<button class="text-sm font-semibold text-slate-700 dark:text-slate-200 hover:text-brand-blue px-3 py-2 transition-colors">
+          Log In
+        </button>
+<a class="bg-brand-blue hover:bg-brand-navy text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-md shadow-brand-blue/25 hover:shadow-brand-blue/40 transition-all" href="#get-started">
+          Get Started
+        </a>
+</div>
+</div>
+</header>
+<!-- END: Navigation -->
+<main>
+<!-- BEGIN: HeroSection -->
+<section class="relative overflow-hidden pt-8 pb-16 lg:pt-14 lg:pb-24">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+<!-- Hero Left Column -->
+<div class="lg:col-span-6 space-y-6">
+<!-- Pill Badge -->
+<div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 dark:bg-brand-darkcard border border-blue-100 dark:border-brand-darkborder text-xs font-semibold text-brand-blue dark:text-brand-sky">
+<span class="w-2 h-2 rounded-full bg-brand-blue animate-ping"></span>
+<span>A SMARTER WAY TO SUBSCRIBE</span>
+</div>
+<!-- Main Heading -->
+<h1 class="text-4xl sm:text-5xl lg:text-[54px] font-extrabold tracking-tight leading-[1.12] text-slate-900 dark:text-white">
+              Smarter access<br/>
+              to <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-blue to-brand-sky">digital services.</span><br/>
+<span class="text-slate-900 dark:text-white font-extrabold">Find. Pay. Use.</span>
+</h1>
+<p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 max-w-lg leading-relaxed">
+              Get affordable access to the digital services you love. Instant activation. Real people. Real savings.
+            </p>
+<!-- Search Bar in Hero -->
+<div class="bg-white dark:bg-brand-darkcard p-2 rounded-2xl border border-slate-200 dark:border-brand-darkborder shadow-sm flex items-center gap-2 max-w-lg">
+<div class="pl-2 text-slate-400">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24">
+<path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+</svg>
+</div>
+<input class="w-full text-sm bg-transparent border-0 focus:ring-0 text-slate-800 dark:text-white placeholder:text-slate-400" placeholder="Search for Netflix, Spotify, ChatGPT..." type="text"/>
+<button class="bg-brand-blue hover:bg-brand-navy text-white text-sm font-semibold px-6 py-2.5 rounded-xl transition-colors shrink-0">
+                Search
+              </button>
+</div>
+<!-- Popular Query Tags -->
+<div class="flex items-center flex-wrap gap-2 text-xs text-slate-500 dark:text-slate-400">
+<span class="font-medium text-slate-700 dark:text-slate-300">Popular:</span>
+<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 cursor-pointer">Netflix</span>
+<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 cursor-pointer">Spotify</span>
+<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 cursor-pointer">ChatGPT</span>
+<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 cursor-pointer">Disney+</span>
+<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 cursor-pointer">YouTube Premium</span>
+<span class="px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg hover:bg-slate-200 cursor-pointer">Prime Video</span>
+</div>
+<!-- CTA Row -->
+<div class="flex items-center gap-4 pt-2">
+<a class="px-7 py-3.5 rounded-xl text-white font-semibold text-sm bg-gradient-to-r from-brand-navy via-brand-blue to-brand-sky hover:opacity-95 shadow-lg shadow-brand-blue/30 transition-all flex items-center gap-2" href="#get-started">
+<span>Get Started</span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+<a class="px-6 py-3.5 rounded-xl text-slate-700 dark:text-slate-200 font-semibold text-sm bg-white dark:bg-brand-darkcard border border-slate-200 dark:border-brand-darkborder hover:bg-slate-50 dark:hover:bg-slate-800 transition-all flex items-center gap-2" href="#how-it-works">
+<span class="text-brand-blue">▶</span> How It Works
+              </a>
+</div>
+<!-- 4 Trust Badges Grid -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-200 dark:border-brand-darkborder/70">
+<!-- Fast -->
+<div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-brand-darkcard/50">
+<div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-brand-blue flex items-center justify-center font-bold text-sm">⚡</div>
+<div>
+<div class="text-xs font-bold text-slate-900 dark:text-white">Fast</div>
+<div class="text-[10px] text-slate-500 dark:text-slate-400">Get access quickly.</div>
+</div>
+</div>
+<!-- Safe -->
+<div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-brand-darkcard/50">
+<div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-brand-blue flex items-center justify-center font-bold text-sm">🛡️</div>
+<div>
+<div class="text-xs font-bold text-slate-900 dark:text-white">Safe</div>
+<div class="text-[10px] text-slate-500 dark:text-slate-400">Secure payments.</div>
+</div>
+</div>
+<!-- Affordable -->
+<div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-brand-darkcard/50">
+<div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-brand-blue flex items-center justify-center font-bold text-sm">👥</div>
+<div>
+<div class="text-xs font-bold text-slate-900 dark:text-white">Affordable</div>
+<div class="text-[10px] text-slate-500 dark:text-slate-400">Share. Save more.</div>
+</div>
+</div>
+<!-- Reliable -->
+<div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 dark:bg-brand-darkcard/50">
+<div class="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/40 text-brand-blue flex items-center justify-center font-bold text-sm">🎧</div>
+<div>
+<div class="text-xs font-bold text-slate-900 dark:text-white">Reliable</div>
+<div class="text-[10px] text-slate-500 dark:text-slate-400">Real support.</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Hero Right Column: 3D Smartphone & Floating Badges -->
+<div class="lg:col-span-6 relative flex items-center justify-center perspective-mockup py-8">
+<!-- Floating Pill 1: More for less -->
+<div class="absolute top-2 right-4 z-30 animate-float-slow bg-white dark:bg-brand-darkcard border border-slate-200 dark:border-brand-darkborder px-4 py-2 rounded-2xl shadow-lg flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-100">
+<span class="text-brand-blue">↗</span>
+<div>
+<span>More for less.</span>
+<span class="block text-[10px] font-normal text-slate-400">Together.</span>
+</div>
+</div>
+<!-- Floating Pill 2: Premium services -->
+<div class="absolute bottom-16 -left-4 z-30 animate-float-reverse bg-white dark:bg-brand-darkcard border border-slate-200 dark:border-brand-darkborder px-4 py-2.5 rounded-2xl shadow-lg text-xs font-bold text-slate-800 dark:text-slate-100">
+<div class="flex items-center gap-1.5 text-brand-blue mb-0.5">
+<span class="text-sm">✦</span> <span>Premium services.</span>
+</div>
+<span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Smarter way.</span>
+</div>
+<!-- Floating 3D Service App Tiles -->
+<!-- Netflix 3D Tile -->
+<div class="absolute top-12 left-4 z-20 animate-float-slow w-14 h-14 bg-black rounded-2xl p-2.5 shadow-xl flex items-center justify-center border border-white/10">
+<span class="text-red-600 font-extrabold text-2xl tracking-tighter">N</span>
+</div>
+<!-- Spotify 3D Tile -->
+<div class="absolute top-14 right-2 z-20 animate-float-reverse w-14 h-14 bg-black rounded-2xl p-2 shadow-xl flex items-center justify-center border border-white/10">
+<div class="w-10 h-10 rounded-full bg-[#1DB954] flex items-center justify-center">
+<svg class="w-6 h-6 text-black fill-current" viewbox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 17.3c-.2.3-.6.4-.9.2-2.5-1.5-5.6-1.8-9.3-1-.4.1-.7-.1-.8-.5-.1-.4.1-.7.5-.8 4.1-.9 7.6-.6 10.3 1.1.4.2.4.6.2 1zm1.5-3.3c-.3.4-.8.5-1.2.3-3-1.8-7.5-2.3-11-1.3-.4.1-.9-.1-1-.5-.1-.4.1-.9.5-1 4-1.2 9-.6 12.4 1.5.4.1.5.7.3 1zm.1-3.4c-3.6-2.1-9.5-2.3-12.9-1.3-.6.2-1.2-.2-1.3-.7-.2-.6.2-1.2.7-1.3 4-1.2 10.6-1 14.7 1.5.5.3.7 1 .4 1.5-.3.5-1 .7-1.6.3z"></path></svg>
+</div>
+</div>
+<!-- ChatGPT 3D Tile -->
+<div class="absolute top-44 right-0 z-20 animate-float-slow w-14 h-14 bg-[#10A37F] rounded-2xl p-2.5 shadow-xl flex items-center justify-center border border-white/20">
+<svg class="w-8 h-8 text-white fill-current" viewbox="0 0 24 24"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.259 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7466-7.0729z"></path></svg>
+</div>
+<!-- Disney+ 3D Tile -->
+<div class="absolute bottom-36 left-2 z-20 animate-float-reverse w-14 h-14 bg-[#0F1B4C] rounded-2xl p-1 shadow-xl flex items-center justify-center border border-blue-400/30 text-white font-black text-[10px]">
+              Disney+
+            </div>
+<!-- YouTube Premium Badge -->
+<div class="absolute bottom-28 right-4 z-20 animate-float-slow w-14 h-14 bg-[#FF0000] rounded-2xl p-2.5 shadow-xl flex items-center justify-center text-white">
+<svg class="w-7 h-7 fill-current" viewbox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path></svg>
+</div>
+<!-- Prime Video Pill -->
+<div class="absolute bottom-10 right-14 z-20 animate-float-reverse bg-[#00A8E1] text-white px-3 py-1.5 rounded-xl shadow-lg text-[11px] font-bold">
+              prime video
+            </div>
+<!-- Angled Smartphone Container -->
+<div class="phone-tilt w-[280px] sm:w-[310px] bg-slate-900 dark:bg-black rounded-[46px] p-3 shadow-phone dark:shadow-phone-dark border-[5px] border-slate-800 dark:border-slate-700 relative">
+<!-- Speaker & Dynamic Island -->
+<div class="w-28 h-4 bg-black rounded-full mx-auto mb-2 flex items-center justify-end px-3">
+<div class="w-2.5 h-2.5 rounded-full bg-blue-950 border border-blue-900"></div>
+</div>
+<!-- Phone Screen Content -->
+<div class="bg-slate-50 dark:bg-[#0E1626] rounded-[36px] overflow-hidden p-3.5 space-y-3 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-800">
+<!-- In-app Top Bar -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-1.5">
+<div class="w-6 h-6 rounded-lg bg-brand-blue flex items-center justify-center text-white text-xs font-bold">S</div>
+<span class="text-xs font-extrabold text-slate-900 dark:text-white">SubShare</span>
+</div>
+<span class="text-xs text-slate-400">🔔</span>
+</div>
+<!-- In-app Mini Search -->
+<div class="bg-white dark:bg-slate-800/90 rounded-full px-3 py-1.5 text-[11px] text-slate-400 border border-slate-200 dark:border-slate-700 flex items-center gap-1.5 shadow-sm">
+<span>🔍</span> <span>Search services...</span>
+</div>
+<!-- Category Filters -->
+<div class="flex items-center gap-1 text-[10px]">
+<span class="bg-brand-blue text-white font-bold px-2 py-0.5 rounded-full">All</span>
+<span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded-full text-slate-600 dark:text-slate-300">Streaming</span>
+<span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded-full text-slate-600 dark:text-slate-300">Productivity</span>
+<span class="bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded-full text-slate-600 dark:text-slate-300">AI</span>
+</div>
+<!-- In-app Service Feeds -->
+<div class="space-y-2 text-xs">
+<!-- Netflix Item -->
+<div class="bg-white dark:bg-slate-800/70 p-2 rounded-xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 bg-black text-red-600 font-black rounded-lg flex items-center justify-center text-xs">N</div>
+<div>
+<div class="font-bold text-[11px] text-slate-900 dark:text-white leading-none">Netflix</div>
+<div class="text-[10px] text-slate-400">₦2,500 / month</div>
+</div>
+</div>
+<span class="text-brand-blue font-bold text-xs">›</span>
+</div>
+<!-- Spotify Item -->
+<div class="bg-white dark:bg-slate-800/70 p-2 rounded-xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 bg-[#1DB954] text-black font-black rounded-lg flex items-center justify-center text-xs">♫</div>
+<div>
+<div class="font-bold text-[11px] text-slate-900 dark:text-white leading-none">Spotify</div>
+<div class="text-[10px] text-slate-400">₦1,800 / month</div>
+</div>
+</div>
+<span class="text-brand-blue font-bold text-xs">›</span>
+</div>
+<!-- ChatGPT Item -->
+<div class="bg-white dark:bg-slate-800/70 p-2 rounded-xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 bg-[#10A37F] text-white font-black rounded-lg flex items-center justify-center text-[10px]">AI</div>
+<div>
+<div class="font-bold text-[11px] text-slate-900 dark:text-white leading-none">ChatGPT Plus</div>
+<div class="text-[10px] text-slate-400">₦5,000 / month</div>
+</div>
+</div>
+<span class="text-brand-blue font-bold text-xs">›</span>
+</div>
+<!-- Disney+ Item -->
+<div class="bg-white dark:bg-slate-800/70 p-2 rounded-xl flex items-center justify-between border border-slate-100 dark:border-slate-700 shadow-sm">
+<div class="flex items-center gap-2">
+<div class="w-7 h-7 bg-[#0F1B4C] text-blue-300 font-black rounded-lg flex items-center justify-center text-[9px]">D+</div>
+<div>
+<div class="font-bold text-[11px] text-slate-900 dark:text-white leading-none">Disney+</div>
+<div class="text-[10px] text-slate-400">₦2,500 / month</div>
+</div>
+</div>
+<span class="text-brand-blue font-bold text-xs">›</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: HeroSection -->
+<!-- BEGIN: PopularServicesSection -->
+<section class="py-16 bg-white dark:bg-brand-darkbg border-y border-slate-200 dark:border-brand-darkborder" id="services">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Section Title & Link -->
+<div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10">
+<div>
+<h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Popular Services</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Most in-demand services on SubShare.</p>
+</div>
+<a class="inline-flex items-center gap-1.5 text-brand-blue dark:text-brand-sky text-sm font-semibold hover:underline mt-3 sm:mt-0" href="#">
+<span>View All Services</span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+<!-- 6-Card Services Grid -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+<!-- Card 1: Netflix -->
+<div class="bg-white dark:bg-brand-darkcard p-4 rounded-2xl border border-slate-200 dark:border-brand-darkborder hover:border-brand-blue hover:shadow-card-lift transition-all duration-300 flex flex-col justify-between" data-purpose="service-card">
+<div>
+<div class="w-12 h-12 rounded-2xl bg-black flex items-center justify-center text-red-600 font-extrabold text-2xl shadow-sm mb-3">N</div>
+<h3 class="font-bold text-base text-slate-900 dark:text-white leading-snug">Netflix Premium</h3>
+<p class="text-xs text-slate-400 dark:text-slate-400 mt-0.5">Movies. Series. More.</p>
+<div class="mt-4 mb-2">
+<span class="text-lg font-extrabold text-slate-900 dark:text-white">₦2,500</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">/ month</span>
+</div>
+<div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-4">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Available now</span>
+<span class="text-slate-400 dark:text-slate-500 font-normal">(3 spots left)</span>
+</div>
+</div>
+<button class="w-full py-2 px-3 bg-brand-blue hover:bg-brand-navy text-white text-xs font-semibold rounded-xl transition-colors">
+              Get Access
+            </button>
+</div>
+<!-- Card 2: Spotify -->
+<div class="bg-white dark:bg-brand-darkcard p-4 rounded-2xl border border-slate-200 dark:border-brand-darkborder hover:border-brand-blue hover:shadow-card-lift transition-all duration-300 flex flex-col justify-between" data-purpose="service-card">
+<div>
+<div class="w-12 h-12 rounded-2xl bg-black flex items-center justify-center mb-3">
+<div class="w-8 h-8 rounded-full bg-[#1DB954] flex items-center justify-center">
+<svg class="w-5 h-5 text-black fill-current" viewbox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.5 17.3c-.2.3-.6.4-.9.2-2.5-1.5-5.6-1.8-9.3-1-.4.1-.7-.1-.8-.5-.1-.4.1-.7.5-.8 4.1-.9 7.6-.6 10.3 1.1.4.2.4.6.2 1zm1.5-3.3c-.3.4-.8.5-1.2.3-3-1.8-7.5-2.3-11-1.3-.4.1-.9-.1-1-.5-.1-.4.1-.9.5-1 4-1.2 9-.6 12.4 1.5.4.1.5.7.3 1zm.1-3.4c-3.6-2.1-9.5-2.3-12.9-1.3-.6.2-1.2-.2-1.3-.7-.2-.6.2-1.2.7-1.3 4-1.2 10.6-1 14.7 1.5.5.3.7 1 .4 1.5-.3.5-1 .7-1.6.3z"></path></svg>
+</div>
+</div>
+<h3 class="font-bold text-base text-slate-900 dark:text-white leading-snug">Spotify Premium</h3>
+<p class="text-xs text-slate-400 dark:text-slate-400 mt-0.5">Music without limits.</p>
+<div class="mt-4 mb-2">
+<span class="text-lg font-extrabold text-slate-900 dark:text-white">₦1,800</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">/ month</span>
+</div>
+<div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-4">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Available now</span>
+<span class="text-slate-400 dark:text-slate-500 font-normal">(5 spots left)</span>
+</div>
+</div>
+<button class="w-full py-2 px-3 bg-brand-blue hover:bg-brand-navy text-white text-xs font-semibold rounded-xl transition-colors">
+              Get Access
+            </button>
+</div>
+<!-- Card 3: ChatGPT Plus -->
+<div class="bg-white dark:bg-brand-darkcard p-4 rounded-2xl border border-slate-200 dark:border-brand-darkborder hover:border-brand-blue hover:shadow-card-lift transition-all duration-300 flex flex-col justify-between" data-purpose="service-card">
+<div>
+<div class="w-12 h-12 rounded-2xl bg-[#000000] border border-slate-700 flex items-center justify-center mb-3">
+<svg class="w-7 h-7 text-white fill-current" viewbox="0 0 24 24"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.259 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7466-7.0729z"></path></svg>
+</div>
+<h3 class="font-bold text-base text-slate-900 dark:text-white leading-snug">ChatGPT Plus</h3>
+<p class="text-xs text-slate-400 dark:text-slate-400 mt-0.5">Smarter. Faster. Further.</p>
+<div class="mt-4 mb-2">
+<span class="text-lg font-extrabold text-slate-900 dark:text-white">₦5,000</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">/ month</span>
+</div>
+<div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-4">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Available now</span>
+<span class="text-slate-400 dark:text-slate-500 font-normal">(2 spots left)</span>
+</div>
+</div>
+<button class="w-full py-2 px-3 bg-brand-blue hover:bg-brand-navy text-white text-xs font-semibold rounded-xl transition-colors">
+              Get Access
+            </button>
+</div>
+<!-- Card 4: Disney+ -->
+<div class="bg-white dark:bg-brand-darkcard p-4 rounded-2xl border border-slate-200 dark:border-brand-darkborder hover:border-brand-blue hover:shadow-card-lift transition-all duration-300 flex flex-col justify-between" data-purpose="service-card">
+<div>
+<div class="w-12 h-12 rounded-2xl bg-[#09153a] flex items-center justify-center mb-3">
+<span class="text-white font-black text-xs tracking-tight">Disney+</span>
+</div>
+<h3 class="font-bold text-base text-slate-900 dark:text-white leading-snug">Disney+</h3>
+<p class="text-xs text-slate-400 dark:text-slate-400 mt-0.5">Movies. Originals. Live.</p>
+<div class="mt-4 mb-2">
+<span class="text-lg font-extrabold text-slate-900 dark:text-white">₦2,500</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">/ month</span>
+</div>
+<div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-4">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Available now</span>
+<span class="text-slate-400 dark:text-slate-500 font-normal">(4 spots left)</span>
+</div>
+</div>
+<button class="w-full py-2 px-3 bg-brand-blue hover:bg-brand-navy text-white text-xs font-semibold rounded-xl transition-colors">
+              Get Access
+            </button>
+</div>
+<!-- Card 5: YouTube Premium -->
+<div class="bg-white dark:bg-brand-darkcard p-4 rounded-2xl border border-slate-200 dark:border-brand-darkborder hover:border-brand-blue hover:shadow-card-lift transition-all duration-300 flex flex-col justify-between" data-purpose="service-card">
+<div>
+<div class="w-12 h-12 rounded-2xl bg-[#FF0000] flex items-center justify-center text-white mb-3">
+<svg class="w-6 h-6 fill-current" viewbox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"></path></svg>
+</div>
+<h3 class="font-bold text-base text-slate-900 dark:text-white leading-snug">YouTube Premium</h3>
+<p class="text-xs text-slate-400 dark:text-slate-400 mt-0.5">Ad-free. Offline. Background.</p>
+<div class="mt-4 mb-2">
+<span class="text-lg font-extrabold text-slate-900 dark:text-white">₦2,000</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">/ month</span>
+</div>
+<div class="flex items-center gap-1.5 text-[11px] font-semibold text-amber-500 mb-4">
+<span class="w-2 h-2 rounded-full bg-amber-500"></span>
+<span>Limited availability</span>
+<span class="text-slate-400 dark:text-slate-500 font-normal">(2 spots left)</span>
+</div>
+</div>
+<button class="w-full py-2 px-3 bg-brand-blue hover:bg-brand-navy text-white text-xs font-semibold rounded-xl transition-colors">
+              Get Access
+            </button>
+</div>
+<!-- Card 6: Microsoft 365 -->
+<div class="bg-white dark:bg-brand-darkcard p-4 rounded-2xl border border-slate-200 dark:border-brand-darkborder hover:border-brand-blue hover:shadow-card-lift transition-all duration-300 flex flex-col justify-between" data-purpose="service-card">
+<div>
+<div class="w-12 h-12 rounded-2xl bg-slate-900 p-2.5 flex items-center justify-center mb-3">
+<!-- 4 color MS tiles -->
+<div class="grid grid-cols-2 gap-1 w-6 h-6">
+<span class="bg-[#F25022] rounded-[2px]"></span>
+<span class="bg-[#7FBA00] rounded-[2px]"></span>
+<span class="bg-[#00A4EF] rounded-[2px]"></span>
+<span class="bg-[#FFB900] rounded-[2px]"></span>
+</div>
+</div>
+<h3 class="font-bold text-base text-slate-900 dark:text-white leading-snug">Microsoft 365</h3>
+<p class="text-xs text-slate-400 dark:text-slate-400 mt-0.5">Work. Create. Collaborate.</p>
+<div class="mt-4 mb-2">
+<span class="text-lg font-extrabold text-slate-900 dark:text-white">₦3,000</span>
+<span class="text-xs text-slate-500 dark:text-slate-400">/ month</span>
+</div>
+<div class="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 mb-4">
+<span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+<span>Available now</span>
+<span class="text-slate-400 dark:text-slate-500 font-normal">(6 spots left)</span>
+</div>
+</div>
+<button class="w-full py-2 px-3 bg-brand-blue hover:bg-brand-navy text-white text-xs font-semibold rounded-xl transition-colors">
+              Get Access
+            </button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: PopularServicesSection -->
+<!-- BEGIN: HowItWorks & WhyChoose Split Section -->
+<section class="py-16 bg-[#F8FAFC] dark:bg-brand-darkbg" id="how-it-works">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left: How SubShare Works 3 Simple Steps -->
+<div class="lg:col-span-7 bg-white dark:bg-brand-darkcard p-8 rounded-3xl border border-slate-200 dark:border-brand-darkborder">
+<div>
+<h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">How SubShare Works</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Get started in 3 simple steps.</p>
+</div>
+<div class="mt-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative">
+<!-- Step 1 -->
+<div class="flex-1 text-left space-y-3">
+<div class="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-brand-blue flex items-center justify-center text-xl shadow-sm">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<h4 class="font-bold text-base text-slate-900 dark:text-white">1. Find</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Browse and choose your preferred service.</p>
+</div>
+</div>
+<!-- Connecting Arrow 1 -->
+<div class="hidden md:flex text-slate-300 dark:text-slate-600 self-center text-xl">→</div>
+<!-- Step 2 -->
+<div class="flex-1 text-left space-y-3">
+<div class="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-brand-blue flex items-center justify-center text-xl shadow-sm">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<h4 class="font-bold text-base text-slate-900 dark:text-white">2. Pay</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Make a secure payment online.</p>
+</div>
+</div>
+<!-- Connecting Arrow 2 -->
+<div class="hidden md:flex text-slate-300 dark:text-slate-600 self-center text-xl">→</div>
+<!-- Step 3 -->
+<div class="flex-1 text-left space-y-3">
+<div class="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-brand-blue flex items-center justify-center text-xl shadow-sm">
+<svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M13 10V3L4 14h7v7l9-11h-7z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+<div>
+<h4 class="font-bold text-base text-slate-900 dark:text-white">3. Use</h4>
+<p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Get instant access and start enjoying.</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Why Choose SubShare? Card with Emblems -->
+<div class="lg:col-span-5 bg-white dark:bg-brand-darkcard p-8 rounded-3xl border border-slate-200 dark:border-brand-darkborder relative overflow-hidden">
+<h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mb-6">Why Choose SubShare?</h3>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3.5 gap-x-2 text-xs sm:text-[13px] font-medium text-slate-700 dark:text-slate-300">
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+<span>Affordable access to premium services</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+<span>Dedicated support</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+<span>Instant activation</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+<span>Trusted by a growing community</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+<span>Real-time availability</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+<span>Transparent pricing</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+<span>Secure payments</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="w-4 h-4 rounded-full bg-brand-blue text-white flex items-center justify-center text-[10px] shrink-0">✓</span>
+<span>Cancel anytime</span>
+</div>
+</div>
+<!-- SubShare 3D Central Emblem Floating Graphic -->
+<div class="mt-8 pt-6 border-t border-slate-100 dark:border-brand-darkborder flex items-center justify-center">
+<div class="relative w-48 h-20 flex items-center justify-center">
+<!-- Outer floating dots -->
+<span class="absolute left-2 top-2 w-6 h-6 rounded-lg bg-black text-red-600 text-[10px] font-bold flex items-center justify-center shadow">N</span>
+<span class="absolute right-4 top-1 w-6 h-6 rounded-lg bg-[#1DB954] text-black text-[10px] font-bold flex items-center justify-center shadow">♫</span>
+<span class="absolute right-1 bottom-1 w-6 h-6 rounded-lg bg-[#FF0000] text-white text-[10px] font-bold flex items-center justify-center shadow">▶</span>
+<!-- Central S Mark -->
+<div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-navy via-brand-blue to-brand-sky text-white text-3xl font-extrabold flex items-center justify-center shadow-lg shadow-brand-blue/30">
+                  S
+                </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- END: HowItWorks & WhyChoose Split Section -->
+<!-- BEGIN: VerifiedTractionBar -->
+<section class="py-6 bg-slate-900 dark:bg-black text-white">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="grid grid-cols-2 md:grid-cols-5 gap-6 items-center text-center md:text-left">
+<!-- Metric 1 -->
+<div class="flex items-center justify-center md:justify-start gap-3">
+<div class="w-10 h-10 rounded-xl bg-blue-950/80 border border-blue-800/60 text-brand-sky flex items-center justify-center text-lg">
+              👥
+            </div>
+<div>
+<div class="text-xl font-extrabold tracking-tight">5,000+</div>
+<div class="text-xs text-slate-400">Happy users</div>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="flex items-center justify-center md:justify-start gap-3">
+<div class="w-10 h-10 rounded-xl bg-blue-950/80 border border-blue-800/60 text-brand-sky flex items-center justify-center text-lg">
+              📦
+            </div>
+<div>
+<div class="text-xl font-extrabold tracking-tight">50+</div>
+<div class="text-xs text-slate-400">Services available</div>
+</div>
+</div>
+<!-- Metric 3 -->
+<div class="flex items-center justify-center md:justify-start gap-3">
+<div class="w-10 h-10 rounded-xl bg-blue-950/80 border border-blue-800/60 text-brand-sky flex items-center justify-center text-lg">
+              ⚡
+            </div>
+<div>
+<div class="text-xl font-extrabold tracking-tight">99%</div>
+<div class="text-xs text-slate-400">Instant activation</div>
+</div>
+</div>
+<!-- Metric 4 -->
+<div class="flex items-center justify-center md:justify-start gap-3">
+<div class="w-10 h-10 rounded-xl bg-blue-950/80 border border-blue-800/60 text-brand-sky flex items-center justify-center text-lg">
+              ★
+            </div>
+<div>
+<div class="text-xl font-extrabold tracking-tight">4.8/5</div>
+<div class="text-xs text-slate-400">Customer rating</div>
+</div>
+</div>
+<!-- Metric CTA -->
+<div class="col-span-2 md:col-span-1 flex flex-col items-center md:items-end justify-center">
+<p class="text-[11px] text-slate-300 mb-1 text-center md:text-right">Join thousands already saving with SubShare.</p>
+<a class="px-4 py-2 bg-white hover:bg-slate-100 text-brand-navy font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5" href="#get-started">
+<span>Get Started</span> <span>→</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- END: VerifiedTractionBar -->
+<!-- BEGIN: TestimonialsSection -->
+<section class="py-16 bg-[#F8FAFC] dark:bg-brand-darkbg">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10">
+<div>
+<h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">What Our Users Say</h2>
+<p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Real people. Real experiences.</p>
+</div>
+<a class="inline-flex items-center gap-1.5 text-brand-blue dark:text-brand-sky text-sm font-semibold hover:underline mt-2 sm:mt-0" href="#">
+<span>View More Reviews</span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</a>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Testimonial 1 -->
+<div class="bg-white dark:bg-brand-darkcard p-6 rounded-2xl border border-slate-200 dark:border-brand-darkborder shadow-sm flex flex-col justify-between space-y-4" data-purpose="testimonial-card">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-lg font-bold text-slate-600 dark:text-slate-300">
+                👨🏾
+              </div>
+<div>
+<h4 class="font-bold text-sm text-slate-900 dark:text-white">Ahmed S.</h4>
+<div class="flex text-amber-400 text-xs">★★★★★</div>
+</div>
+</div>
+<p class="text-xs text-slate-600 dark:text-slate-300 italic leading-relaxed">
+              "SubShare made it so easy to get Netflix at an affordable price. Instant access and great support!"
+            </p>
+</div>
+<!-- Testimonial 2 -->
+<div class="bg-white dark:bg-brand-darkcard p-6 rounded-2xl border border-slate-200 dark:border-brand-darkborder shadow-sm flex flex-col justify-between space-y-4" data-purpose="testimonial-card">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-lg font-bold text-slate-600 dark:text-slate-300">
+                👩🏾
+              </div>
+<div>
+<h4 class="font-bold text-sm text-slate-900 dark:text-white">Fatima B.</h4>
+<div class="flex text-amber-400 text-xs">★★★★★</div>
+</div>
+</div>
+<p class="text-xs text-slate-600 dark:text-slate-300 italic leading-relaxed">
+              "I've been using SubShare for Spotify and ChatGPT. Everything works perfectly."
+            </p>
+</div>
+<!-- Testimonial 3 -->
+<div class="bg-white dark:bg-brand-darkcard p-6 rounded-2xl border border-slate-200 dark:border-brand-darkborder shadow-sm flex flex-col justify-between space-y-4" data-purpose="testimonial-card">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-lg font-bold text-slate-600 dark:text-slate-300">
+                👨🏽
+              </div>
+<div>
+<h4 class="font-bold text-sm text-slate-900 dark:text-white">Usman K.</h4>
+<div class="flex text-amber-400 text-xs">★★★★★</div>
+</div>
+</div>
+<p class="text-xs text-slate-600 dark:text-slate-300 italic leading-relaxed">
+              "Affordable, fast and reliable. Highly recommended!"
+            </p>
+</div>
+</div>
+</div>
+</section>
+<!-- END: TestimonialsSection -->
+<!-- BEGIN: CTABannerSection -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10" id="get-started">
+<div class="relative rounded-3xl overflow-hidden bg-gradient-to-r from-[#063F8F] via-[#0B66D4] to-[#168BFF] text-white p-8 sm:p-12 shadow-xl shadow-brand-blue/20">
+<!-- Smooth Curve Graphics in Background -->
+<div class="absolute -right-20 -bottom-20 w-96 h-96 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+<div class="absolute -left-10 -top-10 w-72 h-72 bg-brand-navy/30 rounded-full blur-xl pointer-events-none"></div>
+<div class="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+<div class="space-y-3 max-w-xl text-center md:text-left">
+<span class="text-[11px] font-bold tracking-widest uppercase text-blue-200">READY TO GET STARTED?</span>
+<h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+              Access more. Spend less.
+            </h2>
+<p class="text-sm sm:text-base text-blue-100">
+              Join SubShare today and start enjoying premium digital services.
+            </p>
+</div>
+<div class="flex flex-col items-center shrink-0">
+<button class="bg-white hover:bg-slate-50 text-brand-navy font-bold text-sm px-8 py-3.5 rounded-2xl shadow-lg transition-transform hover:-translate-y-0.5 flex items-center gap-2">
+<span>Create Your Account</span>
+<svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</button>
+<span class="text-xs text-blue-200 mt-2 font-medium">It's free and takes less than a minute.</span>
+</div>
+</div>
+</div>
+</section>
+<!-- END: CTABannerSection -->
+</main>
+<!-- BEGIN: Footer -->
+<footer class="bg-white dark:bg-[#070B14] border-t border-slate-200 dark:border-brand-darkborder pt-16 pb-12 transition-colors">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+<!-- Top Columns -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-slate-200 dark:border-brand-darkborder">
+<!-- Brand Info -->
+<div class="lg:col-span-1 space-y-3">
+<a class="flex items-center gap-2.5" href="#">
+<div class="w-8 h-8 rounded-xl bg-brand-blue flex items-center justify-center text-white font-extrabold text-xl shadow-sm">
+              S
+            </div>
+<div>
+<span class="text-xl font-extrabold tracking-tight text-slate-900 dark:text-white block leading-none">SubShare</span>
+<span class="text-[9px] font-semibold text-slate-400 tracking-wider">Find. Pay. Use.</span>
+</div>
+</a>
+<p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed pt-2">
+            Smarter access to digital services.
+          </p>
+</div>
+<!-- Quick Links -->
+<div class="space-y-3">
+<h5 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Quick Links</h5>
+<ul class="space-y-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
+<li><a class="hover:text-brand-blue dark:hover:text-white" href="#">Home</a></li>
+<li><a class="hover:text-brand-blue dark:hover:text-white" href="#services">Services</a></li>
+<li><a class="hover:text-brand-blue dark:hover:text-white" href="#how-it-works">How It Works</a></li>
+<li><a class="hover:text-brand-blue dark:hover:text-white" href="#pricing">Pricing</a></li>
+<li><a class="hover:text-brand-blue dark:hover:text-white" href="#support">Support</a></li>
+</ul>
+</div>
+<!-- Legal -->
+<div class="space-y-3">
+<h5 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Legal</h5>
+<ul class="space-y-2 text-xs text-slate-500 dark:text-slate-400 font-medium">
+<li><a class="hover:text-brand-blue dark:hover:text-white" href="#">Terms of Service</a></li>
+<li><a class="hover:text-brand-blue dark:hover:text-white" href="#">Privacy Policy</a></li>
+<li><a class="hover:text-brand-blue dark:hover:text-white" href="#">Refund Policy</a></li>
+<li><a class="hover:text-brand-blue dark:hover:text-white" href="#">Cookie Policy</a></li>
+</ul>
+</div>
+<!-- Connect -->
+<div class="space-y-3">
+<h5 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Connect</h5>
+<!-- Social Icons -->
+<div class="flex items-center gap-2.5 text-slate-600 dark:text-slate-300 text-sm font-semibold">
+<span class="hover:text-brand-blue cursor-pointer">𝕏</span>
+<span class="hover:text-brand-blue cursor-pointer">f</span>
+<span class="hover:text-brand-blue cursor-pointer">📸</span>
+<span class="hover:text-brand-blue cursor-pointer">▶</span>
+<span class="hover:text-brand-blue cursor-pointer">in</span>
+</div>
+<div class="text-xs text-slate-500 dark:text-slate-400 space-y-1.5 pt-1">
+<div class="flex items-center gap-1.5">
+<span>✉</span> <span>support@subshare.com</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span>📍</span> <span>Lagos, Nigeria</span>
+</div>
+</div>
+</div>
+<!-- Download the App Badges -->
+<div class="space-y-3">
+<h5 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">Download the App</h5>
+<div class="flex flex-col gap-2">
+<!-- Google Play Badge -->
+<div class="bg-black text-white px-3 py-1.5 rounded-xl flex items-center gap-2 border border-slate-700 cursor-pointer hover:opacity-90 w-36">
+<span class="text-lg">▶</span>
+<div class="text-left">
+<div class="text-[8px] uppercase tracking-wider text-slate-400">GET IT ON</div>
+<div class="text-[11px] font-bold leading-tight">Google Play</div>
+</div>
+</div>
+<!-- App Store Badge -->
+<div class="bg-black text-white px-3 py-1.5 rounded-xl flex items-center gap-2 border border-slate-700 cursor-pointer hover:opacity-90 w-36">
+<span class="text-lg"></span>
+<div class="text-left">
+<div class="text-[8px] uppercase tracking-wider text-slate-400">Download on the</div>
+<div class="text-[11px] font-bold leading-tight">App Store</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Bottom Credits & Tagline -->
+<div class="pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 dark:text-slate-500 gap-4">
+<div>© 2026 SubShare. All rights reserved.</div>
+<div class="font-medium text-slate-500 dark:text-slate-400">A more connected you.</div>
+</div>
+</div>
+</footer>
+<!-- END: Footer -->
+<!-- BEGIN: ThemeSwitcherScript -->
+<script data-purpose="theme-toggle">
+    function setTheme(mode) {
+      const html = document.documentElement;
+      const lightBtn = document.getElementById('lightToggle');
+      const darkBtn = document.getElementById('darkToggle');
+
+      if (mode === 'dark') {
+        html.classList.add('dark');
+        darkBtn.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+        darkBtn.classList.remove('text-slate-500', 'dark:text-slate-400');
+        lightBtn.classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+        lightBtn.classList.add('text-slate-500', 'dark:text-slate-400');
+      } else {
+        html.classList.remove('dark');
+        lightBtn.classList.add('bg-white', 'text-slate-800', 'shadow-sm');
+        lightBtn.classList.remove('text-slate-500', 'dark:text-slate-400');
+        darkBtn.classList.remove('bg-white', 'text-slate-800', 'shadow-sm');
+        darkBtn.classList.add('text-slate-500', 'dark:text-slate-400');
+      }
+    }
+  </script>
+<!-- END: ThemeSwitcherScript -->
+</body></html>
